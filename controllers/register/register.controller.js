@@ -1,3 +1,5 @@
+const getModels = require("../../models/register/register.model");
+
 async function register(req, res) {
     try {
         const requiredKeys = ["firstname", "lastname", "email", "password"];
@@ -44,11 +46,15 @@ async function register(req, res) {
             }
 
 
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({
-                message: 'it is ok',
-            }));
+            const insertResult = await getModels.register(parsedJson)
 
+            if (insertResult.isSuccess) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "register succesfully", userData: parsedJson, isSuccess: true }));
+            } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(insertResult));
+            }
         });
 
     } catch (err) {
