@@ -32,7 +32,7 @@ async function register(newUserData) {
 }
 
 
-const getModels = {
+const getModels = { 
     register
 }
 

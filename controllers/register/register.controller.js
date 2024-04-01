@@ -9,10 +9,11 @@ async function register(req, res) {
         // get data and fill it in registerData
         let registerData = "";
         req.on("data", (chunk) => {
-            registerData += chunk;
+            registerData += chunk.toString();
         });
 
         req.on("end", async () => {
+            console.log(registerData)
             const parsedJson = JSON.parse(registerData);
             const jsonKeys = Object.keys(parsedJson);
             const hasAllRequiredKeys = requiredKeys.every(key => jsonKeys.includes(key.toLowerCase()));
