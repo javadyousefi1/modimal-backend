@@ -70,7 +70,6 @@ async function register(req, res) {
 async function getUsers(req, res) {
     try {
         const users = await getModels.getUsers()
-        console.log("users", users)
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "register succesfully", userData: users, isSuccess: true }));
     } catch (err) {
@@ -78,22 +77,21 @@ async function getUsers(req, res) {
     }
 }
 
-async function getUsersById(req, res) {
-    let paramsId = req.url.split("/")[3]
-    console.log(paramsId)
+async function getUserById(req, res) {
     try {
+        let paramsId = req.url.split("/")[3]
         const foundedUser = await getModels.getUsersById(paramsId)
         delete foundedUser.password
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "register succesfully", userData: foundedUser, isSuccess: true }));
+        res.end(JSON.stringify({ message: "get user data succesfully", userData: foundedUser, isSuccess: true }));
     } catch (err) {
         console.log(err);
     }
 }
 
 const getControllers = {
-    register, getUsers, getUsersById
+    register, getUsers, getUsersById: getUserById
 }
 
 module.exports = getControllers;
