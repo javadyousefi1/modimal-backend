@@ -36,7 +36,10 @@ async function getUsers() {
         await client.connect()
         const db = client.db(DB_Name)
         const userCollection = db.collection("users")
-        const usersList = userCollection.find({}).toArray();
+        const usersList = (await userCollection.find({}).toArray()).map(item => {
+            delete item.password
+            return item
+        });
 
         return new Promise((resolve, reject) => {
             if (usersList) {
