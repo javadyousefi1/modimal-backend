@@ -31,9 +31,29 @@ async function register(newUserData) {
     }
 }
 
+async function getUsers() {
+    try {
+        await client.connect()
+        const db = client.db(DB_Name)
+        const userCollection = db.collection("users")
+        const usersList = userCollection.find({}).toArray();
 
-const getModels = { 
-    register
+        return new Promise((resolve, reject) => {
+            if (usersList) {
+                resolve(usersList)
+            } else {
+                reject({ message: "failed to get users from db", isSuccess: false })
+            }
+        })
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+const getModels = {
+    register, getUsers
 }
 
 module.exports = getModels

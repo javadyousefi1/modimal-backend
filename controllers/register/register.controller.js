@@ -67,8 +67,19 @@ async function register(req, res) {
     }
 }
 
+async function getUsers(req, res) {
+    try {
+        const users = await getModels.getUsers()
+        console.log("users", users)
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: "register succesfully", userData: users, isSuccess: true }));
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 const getControllers = {
-    register
+    register, getUsers
 }
 
 module.exports = getControllers;
