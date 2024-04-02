@@ -51,9 +51,29 @@ async function getUsers() {
     }
 }
 
+async function getUsersById(id) {
+    try {
+        await client.connect()
+        const db = client.db(DB_Name)
+        const userCollection = db.collection("users")
+        const foundedUser = userCollection.findOne({ _id: new ObjectId(id) })
+
+        return new Promise((resolve, reject) => {
+            if (foundedUser) {
+                resolve(foundedUser)
+            } else {
+                reject({ message: "failed to get users from db", isSuccess: false })
+            }
+        })
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 
 const getModels = {
-    register, getUsers
+    register, getUsers, getUsersById
 }
 
 module.exports = getModels
