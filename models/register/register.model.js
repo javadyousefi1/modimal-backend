@@ -74,9 +74,30 @@ async function getUsersById(id) {
     }
 }
 
+async function getUsersByEmail(email) {
+    try {
+        await client.connect()
+        const db = client.db(DB_Name)
+        const userCollection = db.collection("users")
+        const foundedUser = userCollection.findOne({ email: email })
+
+        return new Promise((resolve, reject) => {
+            if (foundedUser) {
+                resolve(foundedUser)
+            } else {
+                reject({ message: "failed to get users by email from db", isSuccess: false })
+            }
+        })
+
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
 
 const getModels = {
-    register, getUsers, getUsersById
+    register, getUsers, getUsersById, getUsersByEmail
 }
 
 module.exports = getModels
