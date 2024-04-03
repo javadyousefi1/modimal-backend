@@ -13,7 +13,7 @@ async function login(req, res) {
         });
 
         req.on("end", async () => {
-            const parsedJson = JSON.parse(registerData);
+            const parsedJson = JSON.parse(loginData);
 
             function lowercaseKeys(obj) {
                 return Object.keys(obj).reduce((accumulator, key) => {

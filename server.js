@@ -23,9 +23,7 @@ const server = http.createServer((req, res) => {
     } else if (url === `${startPointUrl}/users` && method === "GET") {
         getControllers.getUsers(req, res)
     } else if (url.match(/\/api\/users\/[0-9]+/) && method === "GET") {
-
         getControllers.getUsersById(req, res)
-
     }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
