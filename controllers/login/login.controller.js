@@ -15,7 +15,17 @@ async function login(req, res) {
         req.on("end", async () => {
             const parsedJson = JSON.parse(loginData);
             const jsonKeys = Object.keys(parsedJson);
-            const hasAllRequiredKeys = requiredKeys.every(key => jsonKeys.includes(key.toLowerCase()));
+
+            function lowercaseKeys(obj) {
+                return Object.keys(obj).reduce((accumulator, key) => {
+                    accumulator[key.toLowerCase()] = obj[key];
+                    return accumulator;
+                }, {});
+            }
+
+            const lowerCaseObj = lowercaseKeys(jsonKeys)
+
+            const hasAllRequiredKeys = requiredKeys.every(key => lowerCaseObj.includes(key.toLowerCase()));
 
             if (!hasAllRequiredKeys) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });

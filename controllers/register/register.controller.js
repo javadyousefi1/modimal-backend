@@ -16,7 +16,17 @@ async function register(req, res) {
             console.log(registerData)
             const parsedJson = JSON.parse(registerData);
             const jsonKeys = Object.keys(parsedJson);
-            const hasAllRequiredKeys = requiredKeys.every(key => jsonKeys.includes(key.toLowerCase()));
+
+            function lowercaseKeys(obj) {
+                return Object.keys(obj).reduce((accumulator, key) => {
+                    accumulator[key.toLowerCase()] = obj[key];
+                    return accumulator;
+                }, {});
+            }
+
+            const lowerCaseObj = lowercaseKeys(jsonKeys)
+
+            const hasAllRequiredKeys = requiredKeys.every(key => lowerCaseObj.includes(key.toLowerCase()));
 
             if (!hasAllRequiredKeys) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
