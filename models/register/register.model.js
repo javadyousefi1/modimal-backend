@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb')
-const DB_URL = "mongodb://root:hVhwkuRqQuHVp3oEtb06tqgM@kamet.liara.cloud:33164/my-app?authSource=admin&replicaSet=rs0&directConnection=true"
-const DB_Name = "mongodb-course"
+const DB_URL = "mongodb://admin:xHFrwVqZyiwkn4THS93f@remote-asiatech.runflare.com:32515/admin"
+const DB_Name = "modimal"
 const client = new MongoClient(DB_URL)
 
 
