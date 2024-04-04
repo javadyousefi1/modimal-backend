@@ -58,6 +58,7 @@ async function register(req, res) {
             }
 
 
+            
             const insertResult = await getModels.register(parsedJson)
 
             if (insertResult.isSuccess) {
