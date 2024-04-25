@@ -25,14 +25,14 @@ app.post("/register", async (req, res) => {
 
   const isUserAlreadyExist = await registerModel.countDocuments({ email });
 
-  if (isUserAlreadyExist !== 0) {
-    res.status(400).json({
-      statusCode: res.statusCode,
-      message: "this email already exists",
-      data: null,
-    });
-    return;
-  }
+  // if (isUserAlreadyExist !== 0) {
+  //   res.status(400).json({
+  //     statusCode: res.statusCode,
+  //     message: "this email already exists",
+  //     data: null,
+  //   });
+  //   return;
+  // }
 
   await registerModel
     .create({
