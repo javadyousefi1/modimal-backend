@@ -19,7 +19,7 @@ function sendVerifyCode(firstName, lastName, email, verifyCode) {
     html: `
     <div style="max-width: 600px; margin: auto; color: white;">
         <h1 style="color: white;">Please Verify Your Email Address</h1>
-        <p style="color: white;">Hello ${firstName + "" + lastName}</p>
+        <p style="color: white;">Hello ${firstName + " " + lastName}</p>
         <p style="color: white;">Thank you for signing up for our service. To complete your registration, please verify code into your profile </p>
         <div  style="background-color: #5a6d57; color: white; padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Verify code : ${verifyCode}</div>
         <p style="color: white;">If you did not sign up for our service, please ignore this email.</p>
