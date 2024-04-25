@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
-const DB_URL = "mongodb://localhost:27017/";
-const DB_NAME = "modimal";
+const DB_URL =
+  "mongodb://admin:xHFrwVqZyiwkn4THS93f@remote-asiatech.runflare.com:32515/";
+const DB_NAME = "admin";
 const DB_CONNECT_URL = DB_URL + DB_NAME;
 
 mongoose
