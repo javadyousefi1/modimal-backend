@@ -11,6 +11,12 @@ const { notFound, errorHandler } = require("./src/middlewares/errorHandlers");
 const { registerModel } = require("./src/models/register.model");
 const { verifyCodeModel } = require("./src/models/verifyCode.model");
 const sendVerifyCode = require("./src/utils/sendVerifyCode");
+
+var cors = require('cors');
+
+// Enable CORS for all routes
+app.use(cors());
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
