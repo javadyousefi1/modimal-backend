@@ -1,78 +1,70 @@
-// const http = require('http');
-// const getControllers = require('./controllers/register/register.controller');
-// const getLoginController = require('./controllers/login/login.controller');
-// const PORT = 3000
-
-// const server = http.createServer((req, res) => {
-//     // Set CORS headers
-//     res.setHeader('Access-Control-Allow-Origin', 'https://javadyousefi.com/*');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-//     // Handle preflight requests
-//     if (req.method === 'OPTIONS') {
-//         res.writeHead(200);
-//         res.end();
-//         return;
-//     }
-
-//     const { url, method } = req;
-//     const startPointUrl = "/api"
-
-//     if (url === `${startPointUrl}/register` && method === "POST") {
-//         getControllers.register(req, res)
-//     } else if (url === `${startPointUrl}/login` && method === "POST") {
-//         getLoginController.login(req, res)
-//     } else if (url === `${startPointUrl}/users` && method === "GET") {
-//         getControllers.getUsers(req, res)
-//     } else if (url.match(/\/api\/users\/[0-9]+/) && method === "GET") {
-//         getControllers.getUsersById(req, res)
-//     }
-//     else {
-//         res.writeHead(404, { 'Content-Type': 'application/json' });
-//         res.end(JSON.stringify({
-//             message: 'route not found',
-//         }));
-//     }
-// })
-
-// server.listen(PORT, () => {
-//     console.log(`server running on port ${PORT}`)
-// })
-
+// express
 const express = require("express");
 const app = express();
-
+// port
+const PORT = 3000;
+// db connection
+const db = require("./src/config/mongo.config");
+// middleware
+const { notFound, errorHandler } = require("./src/middlewares/errorHandlers");
+// model
+const { registerModel } = require("./src/models/register.model");
+const { verifyCodeModel } = require("./src/models/verifyCode.model");
+const sendVerifyCode = require("./src/utils/sendVerifyCode");
 app.use(express.json());
 
-// app.use((req, res) => {
-//   res.status(404).json({
-//     statusCode: res.statusCode,
-//     message: "route not found",
-//   });
-// });
-
 app.get("/", (req, res) => {
+  registerModel.create();
   res
     .status(200)
     .json({ statusCode: res.statusCode, message: "welcome to modimal" });
 });
 
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
-  res
-    .status(200)
-    .json({ statusCode: res.statusCode, message: "welcome to modimal" });
+  const isUserAlreadyExist = await registerModel.countDocuments({ email });
+
+  if (isUserAlreadyExist !== 0) {
+    res.status(400).json({
+      statusCode: res.statusCode,
+      message: "this email already exists",
+      data: null,
+    });
+    return;
+  }
+
+  await registerModel
+    .create({
+      firstName,
+      lastName,
+      email,
+      password,
+    })
+    .then(async (response) => {
+      const verifyCode = Math.floor(100000 + Math.random() * 900000);
+
+      await sendVerifyCode(firstName, lastName, email, verifyCode);
+      await verifyCodeModel.create({ email, verifyCode });
+
+      res.status(200).json({
+        statusCode: res.statusCode,
+        message: "user register succesfully",
+        data: response,
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        statusCode: res.statusCode,
+        message: err.message,
+        data: null,
+      });
+    });
 });
 
-app.use((err, req, res, next) => {
-  res.json({
-    statusCode: err.status || 500,
-    message: err.message || "server internal error",
-  });
-});
+app.use(notFound);
+app.use(errorHandler);
 
-app.listen(3000, () => {
-  console.log("server listening on port 3000");
+app.listen(PORT, () => {
+  console.log(`server listening on port ${PORT}`);
 });
