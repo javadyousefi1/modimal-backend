@@ -21,7 +21,7 @@ const registerSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      minLength: 8,
+      minLength: 6,
     },
     profile: {
       type: String,

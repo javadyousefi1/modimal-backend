@@ -20,10 +20,18 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  registerModel.create();
   res
     .status(200)
     .json({ statusCode: res.statusCode, message: "welcome to modimal" });
+});
+
+app.get("/users", async (req, res) => {
+  const usersList = await registerModel.find({}).sort({ _id: -1 });
+  res.status(200).json({
+    statusCode: res.statusCode,
+    message: "users list gets succsesfully",
+    data: usersList,
+  });
 });
 
 app.post("/register", async (req, res) => {
@@ -79,10 +87,12 @@ app.post("/login", async (req, res) => {
       data: null,
     });
   } else {
+    const userData = foundedUser[0];
+    delete userData.password;
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user logged in successfully",
-      data: foundedUser[0],
+      data: userData,
     });
   }
 });
