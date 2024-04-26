@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
-  const usersList = await registerModel.find({}).sort({ _id: -1 });
+  const usersList = await registerModel.find({}).sort({ _id: -1 }).select('-password');;
   res.status(200).json({
     statusCode: res.statusCode,
     message: "users list gets succsesfully",
