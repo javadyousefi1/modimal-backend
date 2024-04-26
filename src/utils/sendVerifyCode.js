@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-function sendVerifyCode(firstName, lastName, email, verifyCode) {
+async function sendVerifyCode(firstName, lastName, email, verifyCode) {
   // Create a transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -30,11 +30,11 @@ function sendVerifyCode(firstName, lastName, email, verifyCode) {
   };
 
   // Send mail with defined transport object
-  transporter.sendMail(mailOptions, (error, info) => {
+  await transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
     } else {
-      console.log("Message sent: %s", info.messageId);
+      // console.log("Message sent: %s", info.messageId);
       // res.status(200).json({ message: "ok" });
     }
   });
