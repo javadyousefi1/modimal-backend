@@ -37,8 +37,8 @@ app.get("/users", async (req, res) => {
   });
 });
 
-app.get("/verifyEmail", async (req, res) => {
-  const { email, verifyCode } = req.query;
+app.post("/verifyEmail", async (req, res) => {
+  const { email, verifyCode } = req.body;
 
   const codeIsValid =
     (await verifyCodeModel.countDocuments({
