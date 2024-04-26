@@ -26,12 +26,41 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
-  const usersList = await registerModel.find({}).sort({ _id: -1 }).select('-password');;
+  const usersList = await registerModel
+    .find({})
+    .sort({ _id: -1 })
+    .select("-password");
   res.status(200).json({
     statusCode: res.statusCode,
     message: "users list gets succsesfully",
     data: usersList,
   });
+});
+
+app.get("/verifyEmail", async (req, res) => {
+  const { email, verifyCode } = req.query;
+
+  const codeIsValid =
+    (await verifyCodeModel.countDocuments({
+      email,
+      verifyCode,
+    })) === 1;
+
+  if (codeIsValid) {
+    const updateUser = await registerModel.updateOne(
+      { email },
+      { isVerify: true }
+    );
+    res.status(200).json({
+      statusCode: res.statusCode,
+      message: "user verify succsecfully",
+    });
+  } else {
+    res.status(400).json({
+      statusCode: res.statusCode,
+      message: "verify code is not correct",
+    });
+  }
 });
 
 app.post("/register", async (req, res) => {
