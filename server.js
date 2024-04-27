@@ -39,9 +39,6 @@ const options = {
       {
         url: "https://modimal-shop.runflare.run",
       },
-      {
-        url: "http://localhost:3000",
-      },
     ],
   },
   apis: ["./*.js"],
