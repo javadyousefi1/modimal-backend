@@ -11,6 +11,7 @@ const { notFound, errorHandler } = require("./src/middlewares/errorHandlers");
 const { registerModel } = require("./src/models/register.model");
 const { verifyCodeModel } = require("./src/models/verifyCode.model");
 const sendVerifyCode = require("./src/utils/sendVerifyCode");
+require('dotenv').config();
 
 var cors = require("cors");
 
@@ -25,15 +26,6 @@ const options = {
       version: "0.1.0",
       description:
         "This is a simple CRUD API application made with Express and documented with Swagger",
-      // license: {
-      //   name: "MIT",
-      //   url: "https://spdx.org/licenses/MIT.html",
-      // },
-      // contact: {
-      //   name: "LogRocket",
-      //   url: "https://logrocket.com",
-      //   email: "info@email.com",
-      // },
     },
     servers: [
       {

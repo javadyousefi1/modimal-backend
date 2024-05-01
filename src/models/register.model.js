@@ -32,7 +32,7 @@ const registerSchema = new Schema(
       default: null,
     },
     joinDate: {
-      type: number,
+      type: Number,
       default: new Date().getTime(),
     },
     isVerify: {
