@@ -12,14 +12,13 @@ const { registerModel } = require("./src/models/register.model");
 const { verifyCodeModel } = require("./src/models/verifyCode.model");
 const sendVerifyCode = require("./src/utils/sendVerifyCode");
 require("dotenv").config();
-const Yup = require("yup");
-
 var cors = require("cors");
 
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const { validate } = require("./src/middlewares/validatorHandler");
 const { registerSchema } = require("./src/validators/register.validator");
+const { loginSchema } = require("./src/validators/login.validator");
 
 const options = {
   definition: {
@@ -353,7 +352,7 @@ app.post("/register", validate(registerSchema), async (req, res) => {
  *                 data:
  *                   type: null
  */
-app.post("/login", async (req, res) => {
+app.post("/login", validate(loginSchema),async (req, res) => {
   const { email, password } = req.body;
 
   const foundedUser = await registerModel.find({ email, password });

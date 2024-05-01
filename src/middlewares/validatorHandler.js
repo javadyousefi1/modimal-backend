@@ -7,8 +7,10 @@ const validate = (schema) => async (req, res, next) => {
     });
     return next();
   } catch (err) {
+    let notValidFeildName = err.path.split(".")[1];
     return res.status(400).json({
-      type: err.name,
+      statusCode: res.statusCode,
+      type: notValidFeildName,
       message: err.message,
     });
   }
