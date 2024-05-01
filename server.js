@@ -11,12 +11,15 @@ const { notFound, errorHandler } = require("./src/middlewares/errorHandlers");
 const { registerModel } = require("./src/models/register.model");
 const { verifyCodeModel } = require("./src/models/verifyCode.model");
 const sendVerifyCode = require("./src/utils/sendVerifyCode");
-require('dotenv').config();
+require("dotenv").config();
+const Yup = require("yup");
 
 var cors = require("cors");
 
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const { validate } = require("./src/middlewares/validatorHandler");
+const { registerSchema } = require("./src/validators/register.validator");
 
 const options = {
   definition: {
@@ -252,7 +255,8 @@ app.post("/verifyEmail", async (req, res) => {
  *                 data:
  *                   type: null
  */
-app.post("/register", async (req, res) => {
+
+app.post("/register", validate(registerSchema), async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   const isUserAlreadyExist = await registerModel.countDocuments({ email });
@@ -263,7 +267,7 @@ app.post("/register", async (req, res) => {
       message: "this email already exists",
       data: null,
     });
-    return;
+    return; 
   }
 
   await registerModel
