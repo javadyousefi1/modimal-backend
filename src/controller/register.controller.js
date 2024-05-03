@@ -1,6 +1,6 @@
 // models
 const { registerModel } = require("../models/register.model");
-const { verifyCodeModel } = require("../models/verifyCode.model");
+const { verifyEmailModel: verifyCodeModel } = require("../models/verifyEmail.model");
 // utils
 const sendVerifyCode = require("../utils/sendVerifyCode");
 

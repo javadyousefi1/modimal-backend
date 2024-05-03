@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const verifyCodeSchema = new Schema(
+const verifyEmailSchema = new Schema(
   {
     email: { type: String, required: true, trim: true },
     verifyCode: { type: Number, required: true, trim: true },
@@ -8,8 +8,8 @@ const verifyCodeSchema = new Schema(
   { versionKey: false }
 );
 
-const verifyCodeModel = model("verifyCode", verifyCodeSchema);
+const verifyEmailModel = model("verifyCode", verifyEmailSchema);
 
 module.exports = {
-  verifyCodeModel,
+  verifyEmailModel,
 };
