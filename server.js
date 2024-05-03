@@ -19,7 +19,26 @@ const swaggerUi = require("swagger-ui-express");
 const { validate } = require("./src/middlewares/validatorHandler");
 const { registerSchema } = require("./src/validators/register.validator");
 const { loginSchema } = require("./src/validators/login.validator");
+let multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { productSchema } = require("./src/validators/product.validator");
+const router = require("./src/routes");
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    fs.mkdirSync("/uploads", { recursive: true });
+    const uploadDir = path.join(__dirname, "uploads");
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const fileFormat = file.originalname.split(".")[1];
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + "-" + uniqueSuffix + "." + fileFormat);
+  },
+});
+
+const upload = multer({ storage });
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -31,6 +50,11 @@ const options = {
     },
     servers: [
       {
+        url: "http://localhost:3000",
+        // url: "https://modimal-shop.runflare.run",
+      },
+      {
+        // url: "http://localhost:3000",
         url: "https://modimal-shop.runflare.run",
       },
     ],
@@ -45,6 +69,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 app.use(cors());
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(router)
 
 /**
  * @swagger
@@ -255,48 +282,6 @@ app.post("/verifyEmail", async (req, res) => {
  *                   type: null
  */
 
-app.post("/register", validate(registerSchema), async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-
-  const isUserAlreadyExist = await registerModel.countDocuments({ email });
-
-  if (isUserAlreadyExist !== 0) {
-    res.status(400).json({
-      statusCode: res.statusCode,
-      message: "this email already exists",
-      data: null,
-    });
-    return; 
-  }
-
-  await registerModel
-    .create({
-      firstName,
-      lastName,
-      email,
-      password,
-    })
-    .then(async (response) => {
-      const verifyCode = Math.floor(100000 + Math.random() * 900000);
-
-      await sendVerifyCode(firstName, lastName, email, verifyCode);
-      await verifyCodeModel.create({ email, verifyCode });
-
-      res.status(200).json({
-        statusCode: res.statusCode,
-        message: "user register succesfully",
-        data: response,
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        statusCode: res.statusCode,
-        message: err.message,
-        data: null,
-      });
-    });
-});
-
 /**
  * @swagger
  * /login:
@@ -352,7 +337,7 @@ app.post("/register", validate(registerSchema), async (req, res) => {
  *                 data:
  *                   type: null
  */
-app.post("/login", validate(loginSchema),async (req, res) => {
+app.post("/login", validate(loginSchema), async (req, res) => {
   const { email, password } = req.body;
 
   const foundedUser = await registerModel.find({ email, password });
@@ -408,6 +393,16 @@ app.get("/verifyEmail", async (req, res) => {
     message: "verfiy codes gets succsesfully",
     data: verifyCodes,
   });
+});
+
+app.post("/upload", upload.single("banner"), (req, res) => {
+  // Check if product name is provided
+  if (!req.body.productName) {
+    return res.status(400).json({ error: "Product name is required." });
+  }
+
+  // Validation passed, respond with success
+  res.status(200).json({ message: "File uploaded successfully." });
 });
 
 app.use(notFound);
