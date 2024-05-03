@@ -1,9 +1,14 @@
 const { Schema, model } = require("mongoose");
 
-const registerSchema = new Schema(
+const prodcutSchema = new Schema(
   {
     productName: {
       type: String,
+      required: true,
+      trim: true,
+    },
+    count: {
+      type: Number,
       required: true,
       trim: true,
     },
@@ -16,8 +21,8 @@ const registerSchema = new Schema(
   { versionKey: false }
 );
 
-const registerModel = model("register", registerSchema, "users");
+const prodcutModel = model("product", prodcutSchema, "products");
 
 module.exports = {
-  registerModel,
+  prodcutModel,
 };
