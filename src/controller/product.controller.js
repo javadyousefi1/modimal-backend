@@ -3,6 +3,7 @@ const fs = require("fs");
 // model
 const { prodcutModel } = require("../models/product.model");
 
+
 const productController = async (req, res) => {
   const time = new Date().getTime();
 
