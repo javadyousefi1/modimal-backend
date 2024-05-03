@@ -14,6 +14,9 @@ const loginController = async (req, res) => {
   } else {
     const userData = foundedUser[0];
     delete userData.password;
+
+    res.cookie("token", "jwt", { maxAge: 5000, httpOnly: true, secure: true });
+
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user logged in successfully",

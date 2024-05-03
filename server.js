@@ -1,8 +1,11 @@
 // express
 const express = require("express");
+const app = express();
 // body parser
 const bodyParser = require("body-parser");
-const app = express();
+// cookie parser
+const cookieParser = require("cookie-parser");
+//serve
 const serveIndex = require("serve-index");
 const serveFavIcon = require("serve-favicon");
 // path
@@ -24,8 +27,6 @@ var cors = require("cors");
 // swagger
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const { validate } = require("./src/middlewares/validatorHandler");
-const { productSchema } = require("./src/validators/product.validator");
 
 const options = {
   definition: {
@@ -50,13 +51,13 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-
+//cookie
+// app.use(cookieParser());
 // Enable CORS for all routes
 app.use(cors());
 // file uploader
-app.use(fileUpload());
-// routers
-app.use(router);
+// app.use(fileUpload());
+
 // fav icon
 app.use(serveFavIcon(path.join(__dirname, "favIcon.svg")));
 // global middlewares
@@ -69,35 +70,11 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-
+// routers
+app.use(router);
 // Serve static files from the 'upload' directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/uploads", serveIndex("uploads", { icons: true }));
-
-// Your upload route
-app.post("/uploads", validate(productSchema), async (req, res) => {
-  if (!req.files) {
-    return res.status(400).json({
-      status: res.statusCode,
-      message: "banner is required",
-      data: null,
-    });
-  } else if (!Object.keys(req.files).includes(...["banner"])) {
-    return res.send({
-      status: res.statusCode,
-      message: "banner is required",
-      data: null,
-    });
-  }
-  const bannerFile = req.files.banner;
-  const extName = path.extname(bannerFile?.name);
-  const uniqueId = new Date().getTime();
-  const uploadUrl = `${__dirname}/uploads/products/product-${
-    uniqueId + extName
-  }`;
-  bannerFile.mv(uploadUrl);
-  res.send(req.body);
-});
 
 // error handlers
 app.use(notFound);

@@ -5,6 +5,7 @@ const { verifyEmailModel: verifyCodeModel } = require("../models/verifyEmail.mod
 const sendVerifyCode = require("../utils/sendVerifyCode");
 
 const registerController = async (req, res) => {
+
   const { firstName, lastName, email, password } = req.body;
 
   const isUserAlreadyExist = await registerModel.countDocuments({ email });
