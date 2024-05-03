@@ -3,6 +3,8 @@ const express = require("express");
 // body parser
 const bodyParser = require("body-parser");
 const app = express();
+const serveIndex = require("serve-index");
+const serveFavIcon = require("serve-favicon");
 // path
 const path = require("path");
 // uploader
@@ -55,7 +57,8 @@ app.use(cors());
 app.use(fileUpload());
 // routers
 app.use(router);
-
+// fav icon
+app.use(serveFavIcon(path.join(__dirname, "favIcon.svg")));
 // global middlewares
 app.use(express.json());
 // Parse application/x-www-form-urlencoded
@@ -68,7 +71,8 @@ app.use(
 app.use(bodyParser.json());
 
 // Serve static files from the 'upload' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", serveIndex("uploads", { icons: true }));
 
 // Your upload route
 app.post("/uploads", validate(productSchema), async (req, res) => {
