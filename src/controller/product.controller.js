@@ -4,8 +4,9 @@ const fs = require("fs");
 const { prodcutModel } = require("../models/product.model");
 
 const productController = async (req, res) => {
-  const { productName, count } = req.body;
+  const time = new Date().getTime();
 
+  const { productName, count, describtion, price, size } = req.body;
   // check file is exsits
   if (!req.files) {
     return res.status(400).json({
@@ -48,7 +49,15 @@ const productController = async (req, res) => {
   const uploadedPath1 = path.join(__dirname, "../../", "uploads", fileName);
   bannerFile.mv(uploadedPath1);
 
-  await prodcutModel.create({ bannerUrl: fileUrl, productName, count });
+  await prodcutModel.create({
+    bannerUrl: fileUrl,
+    productName,
+    count,
+    createdAt: time,
+    describtion,
+    price,
+    size: JSON.parse(size),
+  });
 
   res.send(req.body);
 };
