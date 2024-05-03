@@ -1,0 +1,8 @@
+{
+  "disks": [
+    {
+      "name": "modimal-disk",
+      "mountTo": "uploads"
+    }
+  ]
+}
