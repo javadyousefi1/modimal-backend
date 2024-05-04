@@ -52,9 +52,18 @@ const options = {
 const specs = swaggerJsdoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 //cookie
-// app.use(cookieParser());
+app.use(cookieParser());
 // Enable CORS for all routes
-app.use(cors());
+const url =
+  process.env.MODE === "development"
+    ? process.env.CORS_URL_DEV
+    : process.env.CORS_URL_PRO;
+app.use(
+  cors({
+    origin: url, // Adjust this to match your client's origin
+    credentials: true,
+  })
+);
 // file uploader
 // app.use(fileUpload());
 

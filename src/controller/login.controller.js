@@ -1,5 +1,7 @@
 // models
 const { registerModel } = require("../models/register.model");
+// utils
+const { generateToken } = require("../utils/token");
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
@@ -15,8 +17,11 @@ const loginController = async (req, res) => {
     const userData = foundedUser[0];
     delete userData.password;
 
-    res.cookie("token", "jwt", { maxAge: 5000, httpOnly: true, secure: true });
+    const token = await generateToken({ email });
+    // 86400000
+    res.cookie("token", token, { maxAge: 50000, httpOnly: true, secure: true });
 
+    console.log("ok");
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user logged in successfully",
