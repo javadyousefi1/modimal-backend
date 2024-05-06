@@ -21,7 +21,6 @@ const loginController = async (req, res) => {
     // 86400000
     res.cookie("token", token, { maxAge: 50000, httpOnly: true, secure: true });
 
-    console.log("ok");
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user logged in successfully",

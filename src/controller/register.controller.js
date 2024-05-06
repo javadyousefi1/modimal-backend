@@ -1,11 +1,13 @@
 // models
 const { registerModel } = require("../models/register.model");
-const { verifyEmailModel: verifyCodeModel } = require("../models/verifyEmail.model");
+const {
+  verifyEmailModel: verifyCodeModel,
+} = require("../models/verifyEmail.model");
 // utils
 const sendVerifyCode = require("../utils/sendVerifyCode");
+const { generateToken } = require("../utils/token");
 
 const registerController = async (req, res) => {
-
   const { firstName, lastName, email, password } = req.body;
 
   const isUserAlreadyExist = await registerModel.countDocuments({ email });
@@ -31,6 +33,14 @@ const registerController = async (req, res) => {
 
       await sendVerifyCode(firstName, lastName, email, verifyCode);
       await verifyCodeModel.create({ email, verifyCode });
+
+      const token = await generateToken({ email });
+      // 86400000
+      res.cookie("token", token, {
+        maxAge: 50000,
+        httpOnly: true,
+        secure: true,
+      });
 
       res.status(200).json({
         statusCode: res.statusCode,
