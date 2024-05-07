@@ -3,7 +3,7 @@ const secret = process.env.TOKEN_SECRET ?? "9e42b180d11e050c369cb618f77a862a";
 
 function generateToken(payload) {
   return jwt.sign(payload, secret, {
-    expiresIn: "50000s",
+    expiresIn: "36000000s",
   });
 }
 

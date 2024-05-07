@@ -19,7 +19,7 @@ const loginController = async (req, res) => {
 
     const token = await generateToken({ email });
     // 86400000
-    res.cookie("token", token, { maxAge: 50000, httpOnly: true, secure: true });
+    res.cookie("token", token, { maxAge: 36000000, httpOnly: true, secure: true });
 
     res.status(200).json({
       statusCode: res.statusCode,

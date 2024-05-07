@@ -37,7 +37,7 @@ const registerController = async (req, res) => {
       const token = await generateToken({ email });
       // 86400000
       res.cookie("token", token, {
-        maxAge: 50000,
+        maxAge: 36000000,
         httpOnly: true,
         secure: true,
       });

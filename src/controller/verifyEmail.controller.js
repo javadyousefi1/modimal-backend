@@ -13,9 +13,11 @@ const verifyEmailController = async (req, res) => {
 
   if (codeIsValid) {
     await registerModel.updateOne({ email }, { isVerify: true });
+    const updatedUserData = await registerModel.findOne({ email });
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user verify succsecfully",
+      userData: updatedUserData,
     });
   } else {
     res.status(400).json({
