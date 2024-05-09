@@ -44,7 +44,7 @@ const registerController = async (req, res) => {
 
       res.status(200).json({
         statusCode: res.statusCode,
-        message: "user register succesfully",
+        message: "you register succesfully",
         data: response,
       });
     })
