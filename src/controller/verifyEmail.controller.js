@@ -5,10 +5,19 @@ const { verifyEmailModel } = require("../models/verifyEmail.model");
 const verifyEmailController = async (req, res) => {
   const { email, verifyCode } = req.body;
 
+  const isVerifyCodeNum = isNaN(Number(verifyCode));
+
+  if (isVerifyCodeNum) {
+    return res.status(400).json({
+      statusCode: res.statusCode,
+      message: "verify code is not a number",
+    });
+  }
+
   const codeIsValid =
     (await verifyEmailModel.countDocuments({
       email,
-      verifyCode,
+      verifyCode: Number(verifyCode),
     })) === 1;
 
   if (codeIsValid) {
