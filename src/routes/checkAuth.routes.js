@@ -3,7 +3,7 @@ const router = Router();
 // utils
 const { checkTokenValid } = require("../utils/token");
 // models
-const { registerModel } = require("../models/register.model");
+const { registerModel } = require("../models/auth.model");
 
 router.get("/", async (req, res, next) => {
   const cookies = req.cookies;

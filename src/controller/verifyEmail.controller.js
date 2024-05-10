@@ -1,5 +1,5 @@
 // models
-const { registerModel } = require("../models/register.model");
+const { registerModel } = require("../models/auth.model");
 const { verifyEmailModel } = require("../models/verifyEmail.model");
 
 const verifyEmailController = async (req, res) => {

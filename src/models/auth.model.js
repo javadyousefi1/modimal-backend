@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const registerSchema = new Schema(
+const authSchema = new Schema(
   {
     firstName: {
       type: String,
@@ -43,8 +43,8 @@ const registerSchema = new Schema(
   { versionKey: false }
 );
 
-const registerModel = model("register", registerSchema, "users");
+const authModel = model("register", authSchema, "users");
 
 module.exports = {
-  registerModel,
+  authModel,
 };

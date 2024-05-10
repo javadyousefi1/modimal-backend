@@ -1,5 +1,5 @@
 // models
-const { registerModel } = require("../models/register.model");
+const { registerModel } = require("../models/auth.model");
 
 const getUserController = async (req, res) => {
   const usersList = await registerModel

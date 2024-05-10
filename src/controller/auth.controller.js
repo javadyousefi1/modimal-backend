@@ -1,5 +1,5 @@
 // models
-const { registerModel } = require("../models/register.model");
+const { authModel } = require("../models/auth.model");
 const {
   verifyEmailModel: verifyCodeModel,
 } = require("../models/verifyEmail.model");
@@ -12,7 +12,7 @@ const registerController = async (req, res) => {
 
   const lowerCaseEmail = email.toLowerCase();
 
-  const isUserAlreadyExist = await registerModel.countDocuments({ email });
+  const isUserAlreadyExist = await authModel.countDocuments({ email });
 
   if (isUserAlreadyExist !== 0) {
     res.status(400).json({
@@ -23,7 +23,7 @@ const registerController = async (req, res) => {
     return;
   }
 
-  await registerModel
+  await authModel
     .create({
       firstName,
       lastName,
@@ -64,7 +64,7 @@ const loginController = async (req, res) => {
 
   const lowerCaseEmail = email.toLowerCase();
 
-  const foundedUser = await registerModel.find({
+  const foundedUser = await authModel.find({
     email: lowerCaseEmail,
     password,
   });
