@@ -180,7 +180,7 @@ const resendEmailVerifyCode = async (req, res) => {
   if (timeDiffrent <= 60000) {
     return res.status(400).json({
       status: res.statusCode,
-      message: "the request rejected becuse of spam",
+      message: "verify code was send for you , try later",
     });
   }
 
@@ -198,16 +198,12 @@ const resendEmailVerifyCode = async (req, res) => {
     createdAt: new Date().getTime(),
   });
 
-
-
   await sendVerifyCode(null, null, email, verifyCode);
 
-  res
-    .status(200)
-    .json({
-      statusCode: res.statusCode,
-      message: "verify code resend successful",
-    });
+  res.status(200).json({
+    statusCode: res.statusCode,
+    message: "verify code resend successful",
+  });
 };
 
 module.exports = {
