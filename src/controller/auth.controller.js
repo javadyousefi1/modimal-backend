@@ -8,7 +8,7 @@ const {
 const sendVerifyCode = require("../utils/sendVerifyCode");
 const { generateToken, checkTokenValid } = require("../utils/token");
 
-const registerController = async (req, res) => {
+const registerController = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
   const lowerCaseEmail = email.toLowerCase();
@@ -35,7 +35,11 @@ const registerController = async (req, res) => {
       const verifyCode = Math.floor(100000 + Math.random() * 900000);
 
       await sendVerifyCode(firstName, lastName, email, verifyCode);
-      await verifyCodeModel.create({ email: lowerCaseEmail, verifyCode });
+      await verifyCodeModel.create({
+        email: lowerCaseEmail,
+        verifyCode,
+        createdAt: new Date().getTime(),
+      });
 
       const token = await generateToken({ email });
       // 86400000
@@ -120,12 +124,11 @@ const checkAuthController = async (req, res) => {
       data: null,
     });
   } else {
-    const userData = await authModel.findOne({
-      email: tokenData.email,
-    });
-    // .select("-password");
-    console.log(userData);
-    console.log(tokenData.email);
+    const userData = await authModel
+      .findOne({
+        email: tokenData.email,
+      })
+      .select("-password");
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user token is verify",
@@ -168,8 +171,48 @@ const verifyEmailController = async (req, res) => {
   }
 };
 
+const resendEmailVerifyCode = async (req, res) => {
+  const { email } = req.body;
+  const previousVerifyCode = await verifyCodeModel.findOne({ email });
+
+  const timeDiffrent = new Date().getTime() - previousVerifyCode?.createdAt;
+
+  if (timeDiffrent <= 60000) {
+    return res.status(400).json({
+      status: res.statusCode,
+      message: "the request rejected becuse of spam",
+    });
+  }
+
+  try {
+    await verifyCodeModel.deleteOne({ email });
+  } catch (err) {
+    console.log(err?.message || "failed to delete");
+    next({ statusCode: 400, message: "failed to delete" });
+  }
+  const verifyCode = Math.floor(100000 + Math.random() * 900000);
+
+  await verifyCodeModel.create({
+    email,
+    verifyCode,
+    createdAt: new Date().getTime(),
+  });
+
+
+
+  await sendVerifyCode(null, null, email, verifyCode);
+
+  res
+    .status(200)
+    .json({
+      statusCode: res.statusCode,
+      message: "verify code resend successful",
+    });
+};
+
 module.exports = {
   registerController,
+  resendEmailVerifyCode,
   loginController,
   checkAuthController,
   verifyEmailController,

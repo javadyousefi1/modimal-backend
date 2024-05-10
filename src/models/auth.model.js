@@ -27,10 +27,6 @@ const authSchema = new Schema(
       type: String,
       default: null,
     },
-    address: {
-      type: String,
-      default: null,
-    },
     joinDate: {
       type: Number,
       default: new Date().getTime(),
