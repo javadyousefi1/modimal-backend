@@ -45,10 +45,12 @@ const registerController = async (req, res) => {
         secure: true,
       });
 
+      const newUserData = await authModel.find({ email }).select("-password");
+
       res.status(200).json({
         statusCode: res.statusCode,
         message: "you register succesfully",
-        data: response,
+        data: newUserData,
       });
     })
     .catch((err) => {
@@ -65,10 +67,12 @@ const loginController = async (req, res) => {
 
   const lowerCaseEmail = email.toLowerCase();
 
-  const foundedUser = await authModel.find({
-    email: lowerCaseEmail,
-    password,
-  });
+  const foundedUser = await authModel
+    .find({
+      email: lowerCaseEmail,
+      password,
+    })
+    .select("-password");
   if (foundedUser.length === 0) {
     res.status(400).json({
       statusCode: res.statusCode,
@@ -95,7 +99,7 @@ const loginController = async (req, res) => {
   }
 };
 
-const checkAuthController = async (req, res, next) => {
+const checkAuthController = async (req, res) => {
   const cookies = req.cookies;
 
   if (!req.cookies || !req.cookies?.token) {
@@ -114,9 +118,11 @@ const checkAuthController = async (req, res, next) => {
       data: null,
     });
   } else {
-    const userData = await authModel.findOne({
-      email: tokenData.email.toLowerCase(),
-    });
+    const userData = await authModel
+      .findOne({
+        email: tokenData.email.toLowerCase(),
+      })
+      .select("-password");
 
     res.status(200).json({
       statusCode: res.statusCode,
@@ -160,4 +166,9 @@ const verifyEmailController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, checkAuthController ,verifyEmailController};
+module.exports = {
+  registerController,
+  loginController,
+  checkAuthController,
+  verifyEmailController,
+};
