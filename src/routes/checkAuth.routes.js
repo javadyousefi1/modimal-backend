@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {
       data: null,
     });
   } else {
-    const userData = await registerModel.findOne({ email: tokenData.email });
+    const userData = await registerModel.findOne({ email: tokenData.email.toLowerCase() });
 
     res.status(200).json({
       statusCode: res.statusCode,
