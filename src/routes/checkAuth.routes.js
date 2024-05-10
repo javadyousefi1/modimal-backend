@@ -1,8 +1,9 @@
 const { Router } = require("express");
-const { checkTokenValid } = require("../utils/token");
-const { registerSchema } = require("../validators/register.validator");
-const { registerModel } = require("../models/register.model");
 const router = Router();
+// utils
+const { checkTokenValid } = require("../utils/token");
+// models
+const { registerModel } = require("../models/register.model");
 
 router.get("/", async (req, res, next) => {
   const cookies = req.cookies;
@@ -23,7 +24,9 @@ router.get("/", async (req, res, next) => {
       data: null,
     });
   } else {
-    const userData = await registerModel.findOne({ email: tokenData.email.toLowerCase() });
+    const userData = await registerModel.findOne({
+      email: tokenData.email.toLowerCase(),
+    });
 
     res.status(200).json({
       statusCode: res.statusCode,
