@@ -3,7 +3,7 @@ const router = Router();
 // utils
 const { checkTokenValid } = require("../utils/token");
 // models
-const { registerModel } = require("../models/auth.model");
+const { authModel } = require("../models/auth.model");
 
 router.get("/", async (req, res, next) => {
   const cookies = req.cookies;
@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
       data: null,
     });
   } else {
-    const userData = await registerModel.findOne({
+    const userData = await authModel.findOne({
       email: tokenData.email.toLowerCase(),
     });
 
