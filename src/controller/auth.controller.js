@@ -45,7 +45,7 @@ const registerController = async (req, res) => {
         secure: true,
       });
 
-      const newUserData = await authModel.find({ email }).select("-password");
+      const newUserData = await authModel.findOne({ email }).select("-password");
 
       res.status(200).json({
         statusCode: res.statusCode,
