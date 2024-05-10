@@ -45,7 +45,9 @@ const registerController = async (req, res) => {
         secure: true,
       });
 
-      const newUserData = await authModel.findOne({ email }).select("-password");
+      const newUserData = await authModel
+        .findOne({ email })
+        .select("-password");
 
       res.status(200).json({
         statusCode: res.statusCode,
@@ -114,16 +116,16 @@ const checkAuthController = async (req, res) => {
   if (!tokenData?.email) {
     res.status(401).json({
       statusCode: res.statusCode,
-      message: tokenData || "user token is verify",
+      message: tokenData || "user token is not valid",
       data: null,
     });
   } else {
-    const userData = await authModel
-      .findOne({
-        email: tokenData.email.toLowerCase(),
-      })
-      .select("-password");
-
+    const userData = await authModel.findOne({
+      email: tokenData.email,
+    });
+    // .select("-password");
+    console.log(userData);
+    console.log(tokenData.email);
     res.status(200).json({
       statusCode: res.statusCode,
       message: "user token is verify",
