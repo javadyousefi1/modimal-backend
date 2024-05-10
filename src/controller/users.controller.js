@@ -1,8 +1,8 @@
 // models
-const { registerModel } = require("../models/auth.model");
+const { authModel } = require("../models/auth.model");
 
 const getUserController = async (req, res) => {
-  const usersList = await registerModel
+  const usersList = await authModel
     .find({})
     .sort({ _id: -1 })
     .select("-password");
