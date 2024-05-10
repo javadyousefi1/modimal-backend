@@ -5,7 +5,7 @@ const {
 } = require("../models/verifyEmail.model");
 // utils
 const sendVerifyCode = require("../utils/sendVerifyCode");
-const { generateToken } = require("../utils/token");
+const { generateToken, checkTokenValid } = require("../utils/token");
 
 const registerController = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -94,4 +94,35 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController };
+const checkAuthController = async (req, res, next) => {
+  const cookies = req.cookies;
+
+  if (!req.cookies || !req.cookies?.token) {
+    return res.status(401).json({
+      statusCode: res.statusCode,
+      message: "token is not avalible",
+      data: null,
+    });
+  }
+
+  const tokenData = await checkTokenValid(cookies.token);
+  if (!tokenData?.email) {
+    res.status(401).json({
+      statusCode: res.statusCode,
+      message: tokenData || "user token is verify",
+      data: null,
+    });
+  } else {
+    const userData = await authModel.findOne({
+      email: tokenData.email.toLowerCase(),
+    });
+
+    res.status(200).json({
+      statusCode: res.statusCode,
+      message: "user token is verify",
+      data: userData,
+    });
+  }
+};
+
+module.exports = { registerController, loginController, checkAuthController };
