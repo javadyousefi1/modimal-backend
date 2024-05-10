@@ -5,8 +5,10 @@ const { generateToken } = require("../utils/token");
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
+  
+  const lowerCaseEmail = email.toLowerCase();
 
-  const foundedUser = await registerModel.find({ email, password });
+  const foundedUser = await registerModel.find({ email:lowerCaseEmail, password });
   if (foundedUser.length === 0) {
     res.status(400).json({
       statusCode: res.statusCode,

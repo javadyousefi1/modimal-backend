@@ -10,6 +10,8 @@ const { generateToken } = require("../utils/token");
 const registerController = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
+  const lowerCaseEmail = email.toLowerCase();
+
   const isUserAlreadyExist = await registerModel.countDocuments({ email });
 
   if (isUserAlreadyExist !== 0) {
@@ -25,14 +27,14 @@ const registerController = async (req, res) => {
     .create({
       firstName,
       lastName,
-      email,
+      email: lowerCaseEmail,
       password,
     })
     .then(async (response) => {
       const verifyCode = Math.floor(100000 + Math.random() * 900000);
 
       await sendVerifyCode(firstName, lastName, email, verifyCode);
-      await verifyCodeModel.create({ email, verifyCode });
+      await verifyCodeModel.create({ email: lowerCaseEmail, verifyCode });
 
       const token = await generateToken({ email });
       // 86400000
