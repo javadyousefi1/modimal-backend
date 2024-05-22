@@ -15,6 +15,7 @@ const productController = async (req, res) => {
   const time = new Date().getTime();
   const { productName, count, describtion, price, size, color } = req.body;
 
+
   try {
     // Validate size and color fields
     const parsedSize = validateArrayField(size, "size", res);
