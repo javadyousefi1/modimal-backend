@@ -78,6 +78,7 @@ const { productSchema } = require("../validators/product.validator");
  *                 data:
  *                   type: null
  */
+// router.post("/", productController);
 router.post("/", validate(productSchema), productController);
 
 module.exports = router;

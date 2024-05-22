@@ -65,7 +65,7 @@ app.use(
   })
 );
 // file uploader
-// app.use(fileUpload());
+app.use(fileUpload());
 
 // fav icon
 app.use(serveFavIcon(path.join(__dirname, "favIcon.svg")));

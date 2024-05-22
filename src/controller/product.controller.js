@@ -3,11 +3,18 @@ const fs = require("fs");
 // model
 const { prodcutModel } = require("../models/product.model");
 
-
 const productController = async (req, res) => {
   const time = new Date().getTime();
 
-  const { productName, count, describtion, price, size } = req.body;
+  const { productName, count, describtion, price, size, color } = req.body;
+
+  if (!(Array.isArray(JSON.parse(size)) && Array.isArray(JSON.parse(color)))) {
+    return res.status(400).json({
+      status: res.statusCode,
+      message: "size or color is not an array type",
+      data: null,
+    });
+  }
   // check file is exsits
   if (!req.files) {
     return res.status(400).json({
@@ -50,7 +57,7 @@ const productController = async (req, res) => {
   const uploadedPath1 = path.join(__dirname, "../../", "uploads", fileName);
   bannerFile.mv(uploadedPath1);
 
-  await prodcutModel.create({
+  const newProduct = await prodcutModel.create({
     bannerUrl: fileUrl,
     productName,
     count,
@@ -58,9 +65,14 @@ const productController = async (req, res) => {
     describtion,
     price,
     size: JSON.parse(size),
+    color: JSON.parse(color),
   });
 
-  res.send(req.body);
+  res.status(200).json({
+    statusCode: res.statusCode,
+    message: "product added succsesfully",
+    data: newProduct
+  });
 };
 
 module.exports = { productController };
