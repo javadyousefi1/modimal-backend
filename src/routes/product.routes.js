@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 // controller
-const { productController } = require("../controller/product.controller");
+const { productController, getAllproducts } = require("../controller/product.controller");
 // middleware
 const { validate } = require("../middlewares/validatorHandler");
 // schema
@@ -78,7 +78,8 @@ const { productSchema } = require("../validators/product.validator");
  *                 data:
  *                   type: null
  */
-// router.post("/", productController);
+
 router.post("/", validate(productSchema), productController);
+router.get("/", getAllproducts);
 
 module.exports = router;

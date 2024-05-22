@@ -69,4 +69,18 @@ const productController = async (req, res) => {
   }
 };
 
-module.exports = { productController };
+
+const getAllproducts = async (req, res) => {
+  try {
+    const products = await productModel.find({})
+    res.status(200).json({
+      status: res.statusCode,
+      message: "get all products successfully",
+      data: products,
+    })
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+module.exports = { productController, getAllproducts };
