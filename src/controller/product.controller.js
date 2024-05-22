@@ -1,78 +1,71 @@
 const path = require("path");
 const fs = require("fs");
-// model
-const { prodcutModel } = require("../models/product.model");
+const { productModel } = require("../models/product.model");
+const { validateArrayField } = require("../utils/verifyArray")
+
+const UPLOADS_DIR = path.join(__dirname, "../../uploads");
+
+const createDirectory = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
 const productController = async (req, res) => {
   const time = new Date().getTime();
-
   const { productName, count, describtion, price, size, color } = req.body;
 
-  if (!(Array.isArray(JSON.parse(size)) && Array.isArray(JSON.parse(color)))) {
-    return res.status(400).json({
-      status: res.statusCode,
-      message: "size or color is not an array type",
-      data: null,
-    });
-  }
-  // check file is exsits
-  if (!req.files) {
-    return res.status(400).json({
-      status: res.statusCode,
-      message: "banner is required",
-      data: null,
-    });
-  } else if (!Object.keys(req.files).includes(...["banner"])) {
-    return res.send({
-      status: res.statusCode,
-      message: "banner is required",
-      data: null,
-    });
-  }
-
-  const bannerFile = req.files.banner;
-  const extName = path.extname(bannerFile?.name);
-  const uniqueId = new Date().getTime();
-
-  // Define the path two directories back from the current directory
-  const uploadFolderPath = path.join(__dirname, "../../");
-
-  // Specify the name of the new directory you want to create
-  const uploadDirName = "uploads";
-
-  // Construct the full path to the new directory
-  const newDirectoryPath = path.join(uploadFolderPath, uploadDirName);
-
   try {
-    fs.mkdirSync(newDirectoryPath, { recursive: true });
+    // Validate size and color fields
+    const parsedSize = validateArrayField(size, "size", res);
+    if (!parsedSize) return;
+
+    const parsedColor = validateArrayField(color, "color", res);
+    if (!parsedColor) return;
+
+
+    const bannerFile = req.files.banner;
+    const extName = path.extname(bannerFile.name);
+    const uniqueId = new Date().getTime();
+    const fileName = `${uniqueId}-product${extName}`;
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${fileName}`;
+    const uploadedPath = path.join(UPLOADS_DIR, fileName);
+
+    createDirectory(UPLOADS_DIR);
+
+    bannerFile.mv(uploadedPath, async (err) => {
+      if (err) {
+        return res.status(500).json({
+          status: res.statusCode,
+          message: "Failed to upload file",
+          data: null,
+        });
+      }
+
+      const newProduct = await productModel.create({
+        bannerUrl: fileUrl,
+        productName,
+        count,
+        createdAt: time,
+        describtion,
+        price,
+        size: parsedSize,
+        color: parsedColor,
+      });
+
+      res.status(200).json({
+        statusCode: res.statusCode,
+        message: "Product added successfully",
+        data: newProduct,
+      });
+    });
   } catch (error) {
-    console.error(`Failed to create directory: ${error}`);
+    res.status(500).json({
+      status: res.statusCode,
+      message: "Internal server error",
+      data: null,
+    });
   }
-
-  const fileName = uniqueId + "-" + "product" + extName;
-  // file url on host
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${fileName}`;
-
-  // file url in os
-  const uploadedPath1 = path.join(__dirname, "../../", "uploads", fileName);
-  bannerFile.mv(uploadedPath1);
-
-  const newProduct = await prodcutModel.create({
-    bannerUrl: fileUrl,
-    productName,
-    count,
-    createdAt: time,
-    describtion,
-    price,
-    size: JSON.parse(size),
-    color: JSON.parse(color),
-  });
-
-  res.status(200).json({
-    statusCode: res.statusCode,
-    message: "product added succsesfully",
-    data: newProduct
-  });
 };
 
 module.exports = { productController };
