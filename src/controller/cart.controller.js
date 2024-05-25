@@ -7,16 +7,22 @@ const addToCart = async (req, res) => {
     const cookies = req.cookies
     const tokenData = await checkTokenValid(cookies.token);
 
-    const productId = "2";
-    const count = 1;
+    const productId = "6652393bc20be919ed850780";
+    const count = 24;
     const userEmail = tokenData?.email
     const timeExpire = Date.now() + (30 * 60 * 1000)
 
 
     try {
         const isProductIdValid = await productModel.findOne({ _id: new ObjectId(productId) })
-        
-        
+        console.log(isProductIdValid)
+        if (count > isProductIdValid?.count) {
+            return res.status(400).json({
+                statusCode: res.statusCode,
+                message: "count more thant avalible product on database"
+            })
+        }
+
     } catch (err) {
         return res.status(404).json({
             statusCode: res.statusCode,
