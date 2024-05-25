@@ -1,7 +1,8 @@
 const path = require("path");
 const fs = require("fs");
 const { productModel } = require("../models/product.model");
-const { validateArrayField } = require("../utils/verifyArray")
+const { validateArrayField } = require("../utils/verifyArray");
+const { ObjectId } = require("mongodb");
 
 const UPLOADS_DIR = path.join(__dirname, "../../uploads");
 
@@ -71,6 +72,26 @@ const productController = async (req, res) => {
 
 const getAllproducts = async (req, res) => {
   try {
+    const query = req.query
+    if (query.id) {
+      try {
+        const product = await productModel.findOne({ _id: query.id })
+        responseMessage = `Data product with id ${query.id} got successfully`;
+        return res.status(200).json({
+          statusCode: res.statusCode,
+          message: responseMessage,
+          data: product
+        });
+      } catch (err) {
+        responseMessage = `No product found with id ${query.id}`;
+        return res.status(404).json({
+          statusCode: res.statusCode,
+          message: responseMessage
+        });
+      }
+    }
+
+
     const products = await productModel.find({})
     res.status(200).json({
       status: res.statusCode,
@@ -82,11 +103,5 @@ const getAllproducts = async (req, res) => {
   }
 }
 
-const getProductById = async (req, res) => {
-  const { id } = req.params;
-  const product = await productModel.findOne({ _id: id })
 
-  res.status(200).json({ statusCode: res.statusCode, message: `data product with id "${id}" get succesfully`, data: product })
-}
-
-module.exports = { productController, getAllproducts, getProductById };
+module.exports = { productController, getAllproducts, };

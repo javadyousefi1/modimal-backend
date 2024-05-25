@@ -81,6 +81,6 @@ const { productSchema } = require("../validators/product.validator");
 
 router.post("/", validate(productSchema), productController);
 router.get("/", getAllproducts);
-router.get("/:id", getProductById);
+// router.get("/:id", getProductById);
 
 module.exports = router;
