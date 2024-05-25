@@ -14,7 +14,7 @@ const createDirectory = (dir) => {
 
 const productController = async (req, res) => {
   const time = new Date().getTime();
-  const { productName, count, describtion, price, size, color } = req.body;
+  const { productName, count, describtion, price, size, color, discount } = req.body;
 
 
   try {
@@ -46,6 +46,7 @@ const productController = async (req, res) => {
 
       const newProduct = await productModel.create({
         bannerUrl: fileUrl,
+        discount,
         productName,
         count,
         createdAt: time,
