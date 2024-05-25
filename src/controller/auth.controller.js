@@ -13,7 +13,7 @@ const registerController = async (req, res, next) => {
 
   const lowerCaseEmail = email.toLowerCase();
 
-  const isUserAlreadyExist = await authModel.countDocuments({ email });
+  const isUserAlreadyExist = await authModel.countDocuments({ email: lowerCaseEmail });
 
   if (isUserAlreadyExist !== 0) {
     res.status(400).json({
@@ -50,7 +50,7 @@ const registerController = async (req, res, next) => {
       });
 
       const newUserData = await authModel
-        .findOne({ email })
+        .findOne({ email: lowerCaseEmail })
         .select("-password");
 
       res.status(200).json({
@@ -126,7 +126,7 @@ const checkAuthController = async (req, res) => {
   } else {
     const userData = await authModel
       .findOne({
-        email: tokenData.email,
+        email: tokenData.email.toLowerCase(),
       })
       .select("-password");
     res.status(200).json({
