@@ -4,23 +4,36 @@ const { productModel } = require("../models/product.model");
 const { checkTokenValid } = require("../utils/token");
 
 const addToCart = async (req, res) => {
-    const cookies = req.cookies
-    const tokenData = await checkTokenValid(cookies.token);
+    const { productId, count } = req.body
+    const cookies = req.cookies;
 
-    const productId = "6652393bc20be919ed850780";
-    const count = 24;
-    const userEmail = tokenData?.email
+    let userData = null;
+    try {
+        userData = await checkTokenValid(cookies.token);
+    } catch (err) {
+        return res.status(400).json({
+            statusCode: res.statusCode,
+            message: "you need to login for adding cart"
+        })
+    }
+
+    // const productId = "664e252de9b0763c86a4caed";
+    // const count = 10;
+    const userEmail = userData?.email
     const timeExpire = Date.now() + (30 * 60 * 1000)
 
 
     try {
-        const isProductIdValid = await productModel.findOne({ _id: new ObjectId(productId) })
-        console.log(isProductIdValid)
-        if (count > isProductIdValid?.count) {
+        const isProductIdValid = await productModel.findOne({ _id: productId })
+        // prevent add to cart if count more than data base
+        if (typeof count !== "number" || count > isProductIdValid?.count) {
             return res.status(400).json({
                 statusCode: res.statusCode,
-                message: "count more thant avalible product on database"
+                message: "count more thant avalible product on database or count is not a number"
             })
+        } else {
+
+            // here write a code if not avalible true in order data base reverse the countّ
         }
 
     } catch (err) {
@@ -36,7 +49,10 @@ const addToCart = async (req, res) => {
     });
 
     if (avalibleInCart !== 0) {
-        return res.send("this product avalible in cart")
+        return res.status(400).json({
+            statusCode: res.statusCode,
+            message: "this product avalible in cart"
+        })
     }
 
 
@@ -53,13 +69,16 @@ const addToCart = async (req, res) => {
     if (userHaveCart !== 0) {
         // update cart if already exists
         const test = await cartModel.findOneAndUpdate({ userEmail }, { $push: { cart } })
+        return res.status(200).json({ statusCode: 200, message: "add to cart successfully" })
     } else {
         // create cart
-        const test = await cartModel.create({ userEmail, cart })
+
+        await cartModel.create({ userEmail, cart });
+        return res.status(200).json({ statusCode: 200, message: "add to cart successfully" })
+
     }
 
 
-    res.send("users")
 };
 
 

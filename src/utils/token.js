@@ -12,7 +12,7 @@ function checkTokenValid(token) {
     const decoded = jwt.verify(token, secret);
     return decoded;
   } catch (error) {
-    return error.message || "token is not valid";
+    throw new Error(error.message)
   }
 }
 
