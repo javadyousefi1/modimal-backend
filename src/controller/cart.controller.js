@@ -79,7 +79,7 @@ const getAllCartByUser = async (req, res) => {
     let userEmail = null;
     try {
         const tokenData = await checkTokenValid(cookies.token);
-        userEmail = tokenData?.email;
+        userEmail = tokenData?.email.toLowerCase();
         if (!userEmail) throw new Error('User email not found');
     } catch (err) {
         return res.status(400).json({
@@ -89,19 +89,32 @@ const getAllCartByUser = async (req, res) => {
     }
 
 
-
-
     try {
         const userHaveCart = await cartModel.countDocuments({ userEmail })
         if (userHaveCart === 0) return res.status(200).json({ statusCode: res.statusCode, message: "user cart is empty", data: [] });
 
+        const getAllProducts = await productModel.find({})
+
         const { cart } = await cartModel.findOne({
             userEmail,
         }).select("-_id").select("-userEmail");
+
+        const cartData = []
+
+        await cart.forEach(item => {
+            let obj = item
+            const findTheProduct = [...getAllProducts].find(innerItem => innerItem._id.equals(new ObjectId(item.productId)));
+            obj.productName = findTheProduct.productName;
+            obj.bannerUrl = findTheProduct.bannerUrl;
+            obj.price = findTheProduct.price;
+            cartData.push(item)
+        })
+
+
         res.status(200).json({
             statusCode: res.statusCode,
             message: "get all cart by user succsesfully",
-            data: cart
+            data: cartData
         });
     } catch (err) {
         res.status(400).json({
