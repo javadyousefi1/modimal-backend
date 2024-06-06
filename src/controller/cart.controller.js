@@ -90,8 +90,12 @@ const getAllCartByUser = async (req, res) => {
 
 
 
+
     try {
-        const {cart} = await cartModel.findOne({
+        const userHaveCart = await cartModel.countDocuments({ userEmail })
+        if (userHaveCart === 0) return res.status(200).json({ statusCode: res.statusCode, message: "user cart is empty", data: [] });
+
+        const { cart } = await cartModel.findOne({
             userEmail,
         }).select("-_id").select("-userEmail");
         res.status(200).json({
@@ -99,7 +103,7 @@ const getAllCartByUser = async (req, res) => {
             message: "get all cart by user succsesfully",
             data: cart
         });
-    } catch (error) {
+    } catch (err) {
         res.status(400).json({
             statusCode: res.statusCode,
             message: err.message || "get all cart fail"
