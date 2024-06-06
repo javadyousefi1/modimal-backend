@@ -29,7 +29,7 @@ const registerController = async (req, res, next) => {
       firstName,
       lastName,
       email: lowerCaseEmail,
-      password,
+      password:lowerCasepassword,
     })
     .then(async (response) => {
       const verifyCode = Math.floor(100000 + Math.random() * 900000);
@@ -72,11 +72,12 @@ const loginController = async (req, res) => {
   const { email, password } = req.body;
 
   const lowerCaseEmail = email.toLowerCase();
+  const lowerCasepassword = email.toLowerCase();
 
   const foundedUser = await authModel
     .find({
       email: lowerCaseEmail,
-      password,
+      password:lowerCasepassword,
     })
     .select("-password");
   if (foundedUser.length === 0) {

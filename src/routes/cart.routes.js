@@ -4,6 +4,6 @@ const router = Router();
 
 
 router.post("/addToCart", addToCart);
-router.post("/getAllCartByUser", getAllCartByUser);
+router.get("/getAllCartByUser", getAllCartByUser);
 
 module.exports = router;
