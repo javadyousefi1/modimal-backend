@@ -1,0 +1,8 @@
+{
+  "disks": [
+    {
+      "name": "image-disk",
+      "mountTo": "app/uploads"
+    }
+  ]
+}
