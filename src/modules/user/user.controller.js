@@ -49,19 +49,19 @@ class UserController extends Controller {
             // get data from body
             const { userName, password, token, code } = req.body;
             console.log({ userName, password, token, code })
-            if (!token || !code) throw Error("token or code not send")
+            // if (!token || !code) throw Error("token or code not send")
 
             const result = await this.#model.countDocuments({ userName, password })
 
-            const captcha = await req.redis.get(token, code);
+            // const captcha = await req.redis.get(token, code);
 
-            if (+captcha !== +code) {
-                return res.status(400).json({
-                    statusCode: res.statusCode,
-                    data: null,
-                    message: "کد امنیتی اشتباه است",
-                })
-            }
+            // if (+captcha !== +code) {
+            //     return res.status(400).json({
+            //         statusCode: res.statusCode,
+            //         data: null,
+            //         message: "کد امنیتی اشتباه است",
+            //     })
+            // }
 
             if (result === 0) {
                 throw new createError.Unauthorized("نام کاربری یا رمز عبور اشتباه است")

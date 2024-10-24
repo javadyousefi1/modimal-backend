@@ -33,7 +33,7 @@ class Application {
 
     startServer() {
         this.#server.listen(this.#PORT, () =>
-            console.log(`Listening on port ${this.#PORT}`)
+            console.log(`Listening on port http://localhost:${this.#PORT}`)
         );
     }
 

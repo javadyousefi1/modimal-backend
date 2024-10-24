@@ -66,7 +66,7 @@
 
 /**
  * @swagger
- * /api/user//get-current-user:
+ * /api/user/get-current-user:
  *  get:
  *      summary: get current user
  *      tags:
