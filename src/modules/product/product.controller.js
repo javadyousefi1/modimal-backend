@@ -26,9 +26,6 @@ class ProductController extends Controller {
         try {
             const { title, text, categoryId, isActive, price, offPrice, color, size } = req.body;
 
-            console.log(req.file)
-            console.log(req.files)
-
             if (!req.files) {
                 throw new createError.BadRequest('A file is required for this operation')
             }
