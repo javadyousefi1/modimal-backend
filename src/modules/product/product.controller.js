@@ -26,15 +26,30 @@ class ProductController extends Controller {
         try {
             const { title, text, categoryId, isActive, price, offPrice, color, size } = req.body;
 
-            if (!req.file) {
+            console.log(req.file)
+            console.log(req.files)
+
+            if (!req.files) {
                 throw new createError.BadRequest('A file is required for this operation')
             }
             // check category id is valid or not
             await this.#CategoryController.isCategoryidAlreadyExistsById(categoryId, next)
 
-            const fileUrl = `/uploads/${req.file.filename}`;
 
-            const newMenu = { text, title, categoryId, isActive, price, offPrice, image: { path: fileUrl, id: req.imageId }, color, size };
+            const arrFile = []
+
+            req.files.forEach((item, index) => {
+                const fileUrl = `/uploads/${item.filename}`;
+
+                const obj = {
+                    path: fileUrl,
+                    id: req.imageId,
+                }
+
+                arrFile.push(obj)
+            })
+
+            const newMenu = { text, title, categoryId, isActive, price, offPrice, image: arrFile, color, size };
 
             // prevent dublicate blogs
             const alreadyExsitWithThisTitle = await this.#model.countDocuments({ title })

@@ -13,7 +13,7 @@ const productSchema = new Schema({
   offPrice: { type: Number, required: false, trim: true, default: 0 },
   isActive: { type: Boolean, required: true, default: true },
   categoryId: { type: Schema.Types.ObjectId, ref: "category", required: true, trim: true },
-  image: { type: imageSchema, required: true } // Use the subdocument schema here
+  image: { type: [imageSchema], required: true } // Use the subdocument schema here
 }, { timestamps: true, versionKey: false })
 
 const productModel = model("product", productSchema)

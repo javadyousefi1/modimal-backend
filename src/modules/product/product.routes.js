@@ -37,7 +37,7 @@ const upload = multer({
     }
 });
 
-router.post("/create-product", upload.single('file'), ProductController.addNewMenu)
+router.post("/create-product", upload.array("file", 4), ProductController.addNewMenu)
 router.put("/update-product", upload.single('file'), ProductController.updateMenu)
 router.get("/get-all-products", ProductController.getAllMenus)
 router.get("/get-product-byId", ProductController.getMenuById)

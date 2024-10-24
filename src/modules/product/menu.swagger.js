@@ -52,9 +52,11 @@
  *                              type: string
  *                              description: The category ID associated with the product 
  *                          file:
- *                              type: string
- *                              format: binary
- *                              description: The file image for the product post (must be a valid image file)
+ *                              type: array
+ *                              items:
+ *                                  type: string
+ *                                  format: binary
+ *                              description: An array of file objects for the product
  *                          color:
  *                              type: array
  *                              items:

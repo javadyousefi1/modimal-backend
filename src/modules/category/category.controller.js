@@ -2,7 +2,7 @@ const { isValidObjectId, default: mongoose } = require('mongoose');
 const Controller = require('../../common/controllers/controller')
 // model
 const { categoryModel } = require('./category.model')
-const { menuModel } = require('../product/product.model.js')
+const { menuModel, productModel } = require('../product/product.model.js')
 // error handling
 const createError = require("http-errors");
 // path
@@ -11,11 +11,11 @@ const fs = require('fs');
 const { paginate, buildSearchQuery } = require('../../utils/helpers.js');
 class CategoryController extends Controller {
     #model
-    #menuModel
+    #productModel
     constructor() {
         super()
         this.#model = categoryModel
-        this.#menuModel = menuModel
+        this.#productModel = productModel
     }
 
     async addNewCategory(req, res, next) {
@@ -121,7 +121,7 @@ class CategoryController extends Controller {
         try {
             const { id } = req.query;
             if (!id) next(createError.BadRequest("you dont sent id !"))
-            const isExsitedMenu = await this.#menuModel.countDocuments({ categoryId: id });
+            const isExsitedMenu = await this.#productModel.countDocuments({ categoryId: id });
 
             const willBeDeletedBlog = await this.isCategoryidAlreadyExistsById(id, next)
             if (isExsitedMenu > 0) throw new createError.BadRequest("در منو آیتمی با این دسته بندی درج شده است")
