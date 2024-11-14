@@ -159,12 +159,14 @@ class ProductController extends Controller {
             const { id } = req.query;
             if (!id) next(createError.BadRequest("you dont sent id !"))
             const willBeDeletedMenu = await this.isMenuidAlreadyExistsById(id, next)
-            // delete image
-            const blogImageName = willBeDeletedMenu?.image?.path.split("/").at(-1)
-            let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
-            if (fs.existsSync(imagePath)) {
-                await fs.unlinkSync(imagePath);
-            }
+
+            // console.log(willBeDeletedMenu)
+            // // delete image
+            // const blogImageName = willBeDeletedMenu?.image?.path.split("/").at(-1)
+            // let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
+            // if (fs.existsSync(imagePath)) {
+            //     await fs.unlinkSync(imagePath);
+            // }
 
             res.status(200).json({
                 statusCode: res.statusCode,
