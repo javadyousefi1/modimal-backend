@@ -46,7 +46,11 @@ class ProductController extends Controller {
                 arrFile.push(obj)
             })
 
-            const newMenu = { text, title, categoryId, isActive, price, offPrice, image: arrFile, color, size };
+
+            const colorList = color.split(",")
+            const sizeList = size.split(",")
+
+            const newMenu = { text, title, categoryId, isActive, price, offPrice, image: arrFile, color: colorList, size: sizeList };
 
             // prevent dublicate blogs
             const alreadyExsitWithThisTitle = await this.#model.countDocuments({ title })
@@ -155,8 +159,6 @@ class ProductController extends Controller {
             const { id } = req.query;
             if (!id) next(createError.BadRequest("you dont sent id !"))
             const willBeDeletedMenu = await this.isMenuidAlreadyExistsById(id, next)
-            console.log(willBeDeletedMenu)
-            const blogs = await this.#model.deleteOne({ _id: id });
             // delete image
             const blogImageName = willBeDeletedMenu?.image?.path.split("/").at(-1)
             let imagePath = path.join(__dirname, `../../../uploads/${blogImageName}`)
@@ -164,15 +166,9 @@ class ProductController extends Controller {
                 await fs.unlinkSync(imagePath);
             }
 
-
-            // Get Socket.io instance and emit an event
-            // const io = await getSocket();
-            // await io.emit('menuChanged', { categoryId: willBeDeletedMenu?.categoryId });
-
             res.status(200).json({
                 statusCode: res.statusCode,
                 message: "menu deleted successfully",
-                // data: blogs._id
             })
         } catch (error) {
             next(error)
